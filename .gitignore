@@ -1,1 +1,24 @@
 raylib/
+# Objetos de compilación C
+*.o
+*.obj
+*.a
+*.lib
+
+# Binarios nativos
+*.exe
+*.out
+
+# Archivos temporales
+*.tmp
+*.log
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de debug wasm
+*.wasm.map
+
+# Carpeta emscripten temporal
+emscripten_temp/
