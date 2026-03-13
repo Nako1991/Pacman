@@ -2,6 +2,11 @@
 #include <math.h>
 #include <string.h>
 #include "pila.h"
+#include <time.h>
+
+#if defined(PLATFORM_WEB)
+    #include <emscripten/emscripten.h>
+#endif
 
 //DEFINICIONES
 #define TILESIZE 32  //lucreciadenisebazan@gmail.com
@@ -56,7 +61,7 @@ typedef struct {
 } Score;
 
 typedef struct {
-    int estado; //0: Menú, 1: Juego, 2: GameOver, 3: Scores, 4:SaveScreen, 5: Créditos
+    int estado; //0: Menï¿½, 1: Juego, 2: GameOver, 3: Scores, 4:SaveScreen, 5: Crï¿½ditos
     int frames;
     Vector2 posicionMouse;
     Score bufferScores[DIM];
@@ -146,7 +151,233 @@ typedef struct {
 } Debug;
 
 //PROTOTIPADO
-Tile posicionATile(Vector2 );
+Tile posicionATile(Vector2);
+void GameLoop(void);
+void inicializaciones(Wakawaka *, Menu *, Mapa *, Pacman *, Fantasma [], Debug *);
+void inicializarSonidos(Wakawaka *);
+void inicializarMenu(Menu *);
+void inicializarEstadoJuego(Menu *);
+void inicializarScores(Menu *);
+void inicializarBotonesMenu(Menu *);
+void inicializarBotonPlay(Menu *);
+void inicializarbotonBackScores(Menu *);
+void inicializarBotonScore(Menu *);
+void inicializarBotonVidas(Menu *);
+void inicializarBotonCreditos(Menu *);
+void inicializarBotonVolverAJugar(Menu *);
+void inicializarBotonBackCreditos(Menu *);
+void inicializarScrollCreditos(Menu *);
+void inicializarMapa(Menu *, Mapa *);
+void inicializarMatrizMapa(Mapa *);
+void inicializarTexturasMapa(Mapa *);
+void inicializarParedes(Mapa *);
+int inicializarFrutitas(Mapa *);
+int inicializarFrutasBonus(Mapa *);
+void inicializarTeletransportadores(Mapa *);
+void inicializarPuertas(Mapa *);
+void inicializarItemBonus(Mapa *);
+void buscarPosicionInicialItemBonus(Mapa *);
+void inicializarPacman(Pacman *);
+void inicializarPosicionPacman(Pacman *);
+void inicializarTexturasPacman(Pacman *);
+void inicializarHitboxPacman(Pacman *);
+void inicializarBumpersPacman(Pacman *);
+void inicializarBumperEPacman(Pacman *);
+void inicializarBumperNPacman(Pacman *);
+void inicializarBumperWPacman(Pacman *);
+void inicializarBumperSPacman(Pacman *);
+void inicializarVidas(Pacman *);
+void inicializarEstadoPacman(Pacman *);
+void inicializarFantasmas(Fantasma []);
+void inicializarTexturasFantasmas(Fantasma []);
+void inicializarTexturasFantasmaAmarillo(Fantasma []);
+void inicializarTexturasFantasmaRojo(Fantasma []);
+void inicializarTexturasFantasmaVerde(Fantasma []);
+void inicializarTexturasFantasmaVioleta(Fantasma []);
+void inicializarPosicionFantasmas(Fantasma [], int);
+void inicializarHitboxFantasmas(Fantasma [], int);
+void inicializarBumpersFantasmas(Fantasma [], int);
+void inicializarBumperEFantasmas(Fantasma [], int);
+void inicializarBumperNFantasmas(Fantasma [], int);
+void inicializarBumperWFantasmas(Fantasma [], int);
+void inicializarBumperSFantasmas(Fantasma [], int);
+void inicializarEstadoFantasmas(Fantasma [], int);
+int  elArchivoExiste();
+void inicializarScoresDefault();
+void inicializarNombresScoresDefault(Score []);
+void inicializarValoresScoresDefault(Score []);
+void sobreescribirArchivoScoresDefault(Score []);
+void actualizar(Wakawaka *, Menu *, Mapa *, Pacman *, Fantasma [], Debug *);
+void actualizarInput(Menu *, Mapa *, Pacman *, Fantasma []);
+void moversePorStateMachine(Menu *);
+void actualizarInputMenu(Menu *);
+void actualizarInputJuego(Menu *, Mapa *, Pacman *, Fantasma []);
+void actualizarEnfriamientoItemBonus(Mapa *);
+void actualizarFramesAnimacion(Mapa *, Pacman *, Fantasma []);
+void inputMovimientoPacman(Menu *, Pacman *);
+void inputMovimientoDerechaPacman(Menu *, Pacman *);
+void inputMovimientoArribaPacman(Menu *, Pacman *);
+void inputMovimientoIzquierdaPacman(Menu *, Pacman *);
+void inputMovimientoAbajoPacman(Menu *, Pacman *);
+void inputPausaJuego(Menu *);
+void actualizarInputGameOver(Menu *);
+void actualizarInputSaveScreen(Menu *);
+void cargarNombreDinamico(Menu *);
+void cargarLetraDinamica(Menu *, int);
+void borrarLetraDinamica(Menu *);
+void guardarArchivoScore(Menu *);
+void agregarScoreAArchivo(Menu *);
+void calcularValidosArchivoScores(Menu *);
+void guardarScoreEnArray(Menu *);
+void ordenarArrayScores(Menu *);
+void sobreescribirArchivoScores(Menu *);
+void copiarScore(Score *, Score *);
+void copiarScoreAMenu(Menu *, int, Score *);
+void mostrarScore(Score);
+void mostrarArrayScores(Score [], int);
+void intercambiarScores(Score *, Score *);
+void actualizarColisiones(Wakawaka *, Menu *, Mapa *, Pacman *, Fantasma []);
+void actualizarColisionesMenu(Menu *);
+void actualizarColisionesJuego(Wakawaka *, Menu *, Mapa *, Pacman *, Fantasma []);
+void actualizarColisionPacmanFrutitas(Wakawaka *, Menu *, Mapa *, Pacman *);
+void actualizarColisionPacmanFrutasBonus(Wakawaka *, Menu *, Mapa *, Pacman *);
+void actualizarColisionPacmanItemBonus(Menu *, Mapa *, Pacman *);
+void comerItemBonus(Menu *, Mapa *);
+void comerFrutita(Wakawaka *, Menu *, Mapa *);
+void comerFrutaBonus(Wakawaka *, Menu *, Mapa *, Pacman *);
+void sonidoComerFrutita(Wakawaka *);
+void actualizarColisionPacmanTeletransportadores(Mapa *, Pacman *);
+void teletransportarPacmanAIzquierda(Pacman *);
+void teletransportarPacmanADerecha(Pacman *);
+void actualizarColisionPacmanFantasmas(Wakawaka *, Menu *, Pacman *, Fantasma []);
+void pacmanPierdeUnaVida(Wakawaka *, Menu *, Pacman *);
+void pacmanComeFantasma(Menu *, Fantasma [], int);
+void actualizarColisionBumpersPacman(Mapa *, Pacman *);
+void actualizarColisionPacmanParedes(Mapa *, Pacman *);
+void actualizarTilePacman(Pacman *);
+void corregirPosicionPacman(Pacman *);
+int  pacmanAtropellaParedE(Mapa *, Pacman *, int);
+int  pacmanAtropellaParedN(Mapa *, Pacman *, int);
+int  pacmanAtropellaParedW(Mapa *, Pacman *, int);
+int  pacmanAtropellaParedS(Mapa *, Pacman *, int);
+void actualizarColisionBumpersFantasmas(Mapa *, Fantasma []);
+void actualizarColisionFantasmasTeletransportadores(Mapa *, Fantasma []);
+void teletransportarFantasmasAIzquierda(Fantasma [], int);
+void teletransportarFantasmasADerecha(Fantasma [], int);
+void actualizarIA(Fantasma []);
+void contarBumpersDesactivados(Fantasma [], int);
+void inicializarIAFantasma(Fantasma [], int);
+void verificarSalidasXBumpers(Fantasma [], int);
+void verificarSalidasXDireccion(Fantasma [], int);
+void eliminarUnaSalidaAlAzar(Fantasma [], int);
+void seleccionarSalida(Fantasma [], int);
+void actualizarColisionesScores(Menu *);
+void actualizarColisionesCreditos(Menu *);
+void cambiarEstadoAMenu(Menu *);
+void actualizarPosicion(Menu *, Pacman *, Fantasma []);
+void actualizarPosicionJuego(Pacman *, Fantasma []);
+void actualizarEnfriamientoPacmanReloco(Pacman *, Fantasma []);
+void actualizarEnfriamientoPacmanMuerto(Pacman *);
+void actualizarEnfriamientoFantasmasMuertos(Fantasma []);
+void actualizarPosicionPacman(Pacman *);
+void reiniciarPosicionPacman(Pacman *);
+void actualizarPosicionPacmanXVelocidad(Pacman *);
+void actualizarPosicionHitboxPacman(Pacman *);
+void actualizarPosicionBumpersPacman(Pacman *);
+void actualizarPosicionBumperPacmanE(Pacman *);
+void actualizarPosicionBumperPacmanN(Pacman *);
+void actualizarPosicionBumperPacmanW(Pacman *);
+void actualizarPosicionBumperPacmanS(Pacman *);
+void actualizarPosicionFantasmas(Pacman *, Fantasma []);
+void reiniciarPosicionFantasmas(Fantasma []);
+void reiniciarPosicionFantasma(Fantasma [], int);
+void actualizarPosicionFantasmaXVelocidad(Fantasma [], int);
+void actualizarPosicionHitboxFantasmas(Fantasma []);
+void actualizarPosicionBumpersFantasmas(Fantasma []);
+void actualizarPosicionBumperFantasmaE(Fantasma [], int);
+void actualizarPosicionBumperFantasmaN(Fantasma [], int);
+void actualizarPosicionBumperFantasmaW(Fantasma [], int);
+void actualizarPosicionBumperFantasmaS(Fantasma [], int);
+void actualizarPosicionCreditos(Menu *);
+void dibujar(Menu, Mapa, Pacman, Fantasma [], Debug);
+void dibujarMenu(Menu, Pacman);
+void dibujarFondoMenu();
+void dibujarBotones(Menu, Pacman);
+void dibujarBotonPlay(Menu);
+void dibujarBotonScore(Menu);
+void dibujarBotonVidas(Menu, Pacman);
+void dibujarBotonCreditos(Menu);
+void dibujarJuego(Menu, Mapa, Pacman, Fantasma []);
+void dibujarTexturasMapa(Mapa);
+void dibujarInterfazJuego(Menu, Pacman);
+void dibujarFrutitas(Mapa);
+void dibujarFrutasBonus(Mapa);
+void dibujarItemBonus(Mapa);
+void dibujarPacman(Pacman);
+void dibujarFantasmas(Fantasma []);
+void dibujarFantasmaDerecha(Fantasma [], int);
+void dibujarFantasmasArriba(Fantasma [], int);
+void dibujarFantasmasIzquierda(Fantasma [], int);
+void dibujarFantasmasAbajo(Fantasma [], int);
+void dibujarGameOver(Menu);
+void dibujarScore(Menu);
+void dibujarWinScreen(Menu);
+void dibujarGanasteYScore(Menu);
+void dibujarIngreseNombreParaGuardar();
+void dibujarNombreDinamico(Menu);
+void dibujarMarcadorPosicionMenuGuardado(Menu);
+void dibujarScoreGuardadoCorrectamente();
+void dibujarPresioneAqui(Menu);
+void dibujarCreditos(Menu);
+void dibujarBotonBackCreditos(Menu);
+void dibujarScrollCreditos(Menu);
+void mostrarMatrizInt(int [][COLUMNAS], int, int);
+void dibujarFondoMenuAlternativo();
+void inicializarDebug(Debug *);
+void inicializarVentanaDebug(Debug *);
+void inicializarBotonesDebug(Debug *);
+void inicializarBotonesNumericosDebug(Debug *);
+void inicializarCeroDebug(Debug *);
+void inicializarBotonMenosDebug(Debug *);
+void inicializarBotonMasDebug(Debug *);
+void inicializarValoresVariablesDebug(Debug *);
+void inicializarColoresDebug(Debug *);
+void inicializarColorVLTeal(Debug *, char [][4]);
+void inicializarColorLTeal(Debug *, char [][4]);
+void inicializarColorTeal(Debug *, char [][4]);
+void inicializarColorDTeal(Debug *, char [][4]);
+void inicializarColorVDTeal(Debug *, char [][4]);
+void actualizarDebug(Debug *, Menu *);
+void actualizarInputDebug(Debug *);
+void mostrarValoresVariables(Debug *);
+void actualizarInterruptoresVariables(Debug *);
+void actualizarValoresVariables(Debug *);
+void incrementarMuchoValorVariable(Debug *);
+void incrementarPocoValorVariable(Debug *);
+void incrementarValorVariable(Debug *);
+void decrementarMuchoValorVariable(Debug *);
+void decrementarPocoValorVariable(Debug *);
+void decrementarValorVariable(Debug *);
+void dibujarVentanaDebug(Debug, Menu);
+void dibujarBotonesNumericosDebug(Debug);
+void dibujarBotonesSumaYResta(Debug);
+void dibujarHitboxDebug(Debug, Mapa, Pacman, Fantasma []);
+void dibujarHitboxParedes(Debug, Mapa);
+void dibujarHitboxPacman(Debug, Pacman);
+void dibujarBumpersPacman(Debug, Pacman);
+void dibujarBumperPacmanE(Debug, Pacman);
+void dibujarBumperPacmanN(Debug, Pacman);
+void dibujarBumperPacmanW(Debug, Pacman);
+void dibujarBumperPacmanS(Debug, Pacman);
+void dibujarHitboxFantasmas(Debug, Fantasma []);
+void dibujarHitboxLinesFantasmas(Debug, Fantasma []);
+void dibujarBumpersFantasmas(Debug, Fantasma []);
+void dibujarBumperFantasmaE(Debug, Fantasma []);
+void dibujarBumperFantasmaN(Debug, Fantasma []);
+void dibujarBumperFantasmaW(Debug, Fantasma []);
+void dibujarBumperFantasmaS(Debug, Fantasma []);
+void actualizarTestDebug(Debug *, Menu *);
+void dibujarTestDebug(Debug, Menu);
 
 //CONSTANTES
 const int anchoVentana = TILESIZE * COLUMNAS;
@@ -155,30 +386,27 @@ const char nombreArchivoScores[DIM] = "pacmanScores.bin" ;
 
 //VARIABLES GLOBALES
 int i, j, k, m;
+Wakawaka wakawaka_g;
+Mapa mapa_g;
+Menu menu_g;
+Pacman pacman_g;
+Fantasma fantasmas_g[4];
+Debug herramientaDebug_g;
 
 int main() {
-    //INICIALIZACIONES
-    //-------------------------------------------------------------------------------------
     srand(time(NULL));
-    Wakawaka wakawaka;
-    Mapa mapa;
-    Menu menu;
-    Pacman pacman;
-    Fantasma fantasmas[4];
-    Debug herramientaDebug;
-    inicializaciones(&wakawaka, &menu, &mapa, &pacman, &fantasmas, &herramientaDebug);
-    //-------------------------------------------------------------------------------------
-    //BUCLE PRINCIPAL
-    //-------------------------------------------------------------------------------------
-    while( !WindowShouldClose() ) {
-        actualizar(&wakawaka, &menu, &mapa, &pacman, &fantasmas, &herramientaDebug);
-        dibujar(menu, mapa, pacman, fantasmas, herramientaDebug);
-    }
-    //-------------------------------------------------------------------------------------
-    //DE-INICIALIZACION
-    //-------------------------------------------------------------------------------------
-    CloseAudioDevice();
-    CloseWindow();
+    inicializaciones(&wakawaka_g, &menu_g, &mapa_g, &pacman_g, fantasmas_g, &herramientaDebug_g);
+
+    #if defined(PLATFORM_WEB)
+        emscripten_set_main_loop(GameLoop, 0, 1);
+    #else
+        while( !WindowShouldClose() ) {
+            GameLoop();
+        }
+        CloseAudioDevice();
+        CloseWindow();
+    #endif
+
     return 0;
 }
 //INICIALIZACIONES
@@ -297,6 +525,7 @@ void inicializarMapa(Menu *menu, Mapa *mapa) {
     inicializarItemBonus(mapa);
 }
 void inicializarMatrizMapa(Mapa *mapa) {
+    k = 0;
     int bufferMapa1Izquierda[21][17] = { //j es el eje x, i es el eje y
         // 0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16
         {  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0}, //0
@@ -774,6 +1003,10 @@ void sobreescribirArchivoScoresDefault(Score scores[]) {
 }
 //BUCLE PRINCIPAL
 //-------------------------------------------------------------------------------------
+void GameLoop(void) {
+    actualizar(&wakawaka_g, &menu_g, &mapa_g, &pacman_g, fantasmas_g, &herramientaDebug_g);
+    dibujar(menu_g, mapa_g, pacman_g, fantasmas_g, herramientaDebug_g);
+}
 //ACTUALIZAR
 //-------------------------------------------------------------------------------------
 void actualizar(Wakawaka *wakawaka, Menu *menu, Mapa *mapa, Pacman *pacman, Fantasma fantasmas[], Debug *herramientaDebug) {
@@ -909,7 +1142,7 @@ void agregarScoreAArchivo(Menu *menu) {
     FILE *archivoScore = fopen(nombreArchivoScores, "ab");
     if( archivoScore ==  NULL ) printf("\nError. El archivo de Score no existe.");
     if( archivoScore !=  NULL ) {
-        copiarScore(&bufferScore, menu->scoreYNombre);
+        copiarScore(&bufferScore, &menu->scoreYNombre);
         fwrite(&bufferScore, sizeof(Score), 1, archivoScore);
         fclose(archivoScore);
     }
@@ -1353,7 +1586,7 @@ void eliminarUnaSalidaAlAzar(Fantasma fantasmas[], int i)
 void seleccionarSalida(Fantasma fantasmas[], int i)
 {
     for( k = 0 ; k < 4 ; k++ )
-    {    //cada 4 frames para q no den giros de 180º
+    {    //cada 4 frames para q no den giros de 180ï¿½
         if( fantasmas[i].IA.salida[k] == 1 && fantasmas[i].IA.framesIA%4 == 0 ) fantasmas[i].direccion = k;
     }
 }
