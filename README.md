@@ -18,12 +18,12 @@ The game runs entirely in the browser through WebAssembly.
 
 <p>
 <strong>Play here:</strong><br>
-https://YOUR-USERNAME.github.io/YOUR-REPOSITORY/
+https://nako1991.github.io/Pacman/
 </p>
 
 <p>
 <strong>Controls</strong><br>
-Arrow Keys → Move Pac-Man
+Arrow Keys / WASD → Move Pac-Man
 </p>
 
 ---
@@ -54,9 +54,11 @@ Because the game is written entirely in C, many systems had to be handled manual
 
 <ul>
 <li>Memory management</li>
-<li>Pointers and double pointers</li>
+<li>Pointers</li>
 <li>Struct design and data ownership</li>
 <li>Passing references between functions</li>
+<li>Manual matrix management and row/column traversal</li>
+<li>Understanding scopes and environments (global variables, local variables, and loop scopes)</li>
 <li>Avoiding undefined behavior</li>
 <li>Manual array and memory control</li>
 </ul>
@@ -70,7 +72,11 @@ Working at this level provided a deep understanding of how programs actually beh
 <h3>Clean Code Principles</h3>
 
 <p>
-During the development of this project I was also studying the work of Robert C. Martin (Uncle Bob) and his Clean Code philosophy.
+During the development of this project I also studied several software design principles inspired by the work of Robert C. Martin (Uncle Bob) and the classic book <i>Design Patterns: Elements of Reusable Object-Oriented Software</i>.
+</p>
+
+<p>
+Although the project is written in C and not in an object-oriented language, many of the architectural ideas from these sources influenced how the systems were structured.
 </p>
 
 <p>
@@ -148,19 +154,25 @@ The game uses a state-based architecture to control the flow of the application.
 <h3>Collision System</h3>
 
 <p>
-Collision handling was implemented manually. Invisible bumpers and interaction objects are used to control movement and environmental interaction.
+Collision handling was implemented manually. Each entity in the game has its own collision detection system, including Pac-Man and the ghosts. These systems determine whether movement is allowed within the map, preventing characters from passing through walls and detecting interactions such as Pac-Man being caught by a ghost.
+</p>
+
+<p>
+Invisible bumpers and interaction objects are used to control movement and environmental interactions. When a collision occurs, the system determines how the entity should react within the game world.
+</p>
+
+<p>
+Ghosts also use a simple decision system that behaves like a lightweight artificial intelligence. After encountering obstacles or collisions, they evaluate possible directions and continue navigating the maze, allowing them to pursue or intercept the player while respecting the map layout.
+</p>
+
+<p>
+Ghost behaviors and interactions were implemented independently rather than copying original Pac-Man logic.
 </p>
 
 <h3>Teleportation Tunnel</h3>
 
 <p>
 The classic Pac-Man tunnel mechanic was recreated, allowing the player to travel from one side of the map to the other.
-</p>
-
-<h3>Ghost Interaction</h3>
-
-<p>
-Ghost behaviors and interactions were implemented independently rather than copying original Pac-Man logic.
 </p>
 
 <h3>Score System</h3>
@@ -207,42 +219,6 @@ Rendering and audio are handled through the Raylib multimedia library.
 <li>WebAssembly</li>
 <li>GitHub Pages</li>
 </ul>
-
----
-
-<h2>Running the Project</h2>
-
-<h3>Native Build</h3>
-
-<p>
-Requirements:
-</p>
-
-<ul>
-<li>raylib</li>
-<li>gcc or clang</li>
-</ul>
-
-<pre>
-gcc main.c pila.c -lraylib -o pacman
-</pre>
-
----
-
-<h3>Web Build</h3>
-
-<p>
-Requirements:
-</p>
-
-<ul>
-<li>Emscripten</li>
-<li>Raylib compiled for the Web platform</li>
-</ul>
-
-<pre>
-emcc main.c pila.c -o docs/index.html
-</pre>
 
 ---
 
